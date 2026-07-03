@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P File Share Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/home.css">
+
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container">
+        <header>
+            <h1>Peer2Peer Portal</h1>
+            <p class="subtitle">Secure, fast, and serverless peer-to-peer file sharing</p>
+        </header>
+
+        <main class="card">
+            <div class="badge">
+                <span style="display:inline-block; width:8px; height:8px; background-color:var(--success); border-radius:50%;"></span>
+                Containerized & Deployment-Ready
+            </div>
+
+            <div class="upload-mockup">
+                <div class="upload-icon">⚡</div>
+                <h3>Drag & Drop Files Here</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Files will be shared directly peer-to-peer via WebRTC</p>
+            </div>
+
+            <div class="devops-info">
+                <div class="info-box">
+                    <span class="info-label">Active Hostname (Pod ID)</span>
+                    <span class="info-value">{{.Hostname}}</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Client IP Address</span>
+                    <span class="info-value">{{.ClientIP}}</span>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

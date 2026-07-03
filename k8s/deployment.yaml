@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: p2p-share-deployment
+  labels:
+    app: p2p-share
+spec:
+  replicas: 3  # Scale to 3 pods to demonstrate high-availability and load balancing
+  selector:
+    matchLabels:
+      app: p2p-share
+  template:
+    metadata:
+      labels:
+        app: p2p-share
+    spec:
+      containers:
+      - name: p2p-share-container
+        # Placeholder for AWS ECR Repository URL. You will replace this after creating your ECR registry.
+        image: REPLACE_WITH_ECR_REPO_URL:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        # Probe to ensure the pod is alive
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        # Probe to ensure the pod is ready to serve traffic
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10

@@ -1,0 +1,42 @@
+# ==============================================================================
+# Docker Compose for the Peer2Peer File Sharing App
+#
+# Builds the Go service from the multi-stage Dockerfile and runs it locally.
+#   docker compose up --build      # start (rebuilds the image)
+#   docker compose down            # stop and remove containers
+# ==============================================================================
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: p2p-share:latest
+    container_name: p2p-share
+    ports:
+      # host:container — app listens on 8080 inside the container
+      - "8080:8080"
+    restart: unless-stopped
+    # Persist uploaded files across container restarts. The app writes to
+    # ./uploads (WORKDIR /root/uploads inside the image).
+    volumes:
+      - uploads-data:/root/uploads
+    # Mirror the Kubernetes liveness probe: GET / on :8080. alpine's busybox
+    # ships wget, so no extra packages are needed.
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    # Match the resource envelope declared in k8s/deployment.yaml.
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 256M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
+
+volumes:
+  uploads-data:
