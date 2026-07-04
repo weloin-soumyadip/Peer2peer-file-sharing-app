@@ -119,13 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Transition States
     landingState.classList.remove('active');
-    setTimeout(() => {
-      landingState.style.display = 'none';
-      roomState.style.display = 'block';
-      setTimeout(() => {
-        roomState.classList.add('active');
-      }, 50);
-    }, 400);
+    landingState.style.display = 'none';
+    roomState.style.display = 'block';
+    roomState.classList.add('active');
 
     // Simulate connections based on who joined
     simulatePeerConnection();
@@ -240,14 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Transition States back
     roomState.classList.remove('active');
-    setTimeout(() => {
-      roomState.style.display = 'none';
-      landingState.style.display = 'block';
-      setTimeout(() => {
-        landingState.classList.add('active');
-        updateTabSlider();
-      }, 50);
-    }, 400);
+    roomState.style.display = 'none';
+    landingState.style.display = 'block';
+    landingState.classList.add('active');
+    updateTabSlider();
   });
 
   // --- 4. Copy Widgets Functionality ---

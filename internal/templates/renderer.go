@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"bytes"
 	"html/template"
 	"net/http"
 )
@@ -10,11 +11,14 @@ var tmpl = template.Must(
 ) 
 
 func Render(w http.ResponseWriter, name string, data any) {
-	err := tmpl.ExecuteTemplate(w, name, data)
+	var buf bytes.Buffer
+	err := tmpl.ExecuteTemplate(&buf, name, data)
 
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 
 		return
 	}
+
+	w.Write(buf.Bytes())
 }
