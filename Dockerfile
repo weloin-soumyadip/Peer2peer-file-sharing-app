@@ -1,5 +1,26 @@
 # ==============================================================================
-# STAGE 1: Build the Go binary
+# STAGE 1: Development with Hot Reloading (Dev Target)
+# ==============================================================================
+FROM golang:1.26-alpine AS dev
+
+RUN apk update && apk add --no-cache git
+
+WORKDIR /app
+
+# Install air for hot reloading
+RUN go install github.com/air-verse/air@latest
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["air", "-c", ".air.toml"]
+
+# ==============================================================================
+# STAGE 2: Build the Go binary (For Production)
 # ==============================================================================
 FROM golang:1.26-alpine AS builder
 
@@ -22,7 +43,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/server
 
 # ==============================================================================
-# STAGE 2: Run the Go binary
+# STAGE 3: Run the Go binary (For Production)
 # ==============================================================================
 FROM alpine:latest
 
@@ -35,8 +56,7 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 
 # Copy static assets and folder structure expected by the app
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/templates ./templates
+COPY --from=builder /app/web ./web
 COPY --from=builder /app/uploads ./uploads
 
 # Expose the application port

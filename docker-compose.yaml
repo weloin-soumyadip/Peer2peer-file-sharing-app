@@ -1,8 +1,9 @@
 # ==============================================================================
-# Docker Compose for the Peer2Peer File Sharing App
+# Docker Compose for the Peer2Peer File Sharing App (Local Development)
 #
-# Builds the Go service from the multi-stage Dockerfile and runs it locally.
-#   docker compose up --build      # start (rebuilds the image)
+# Builds the Go service from the dev stage in Dockerfile and runs it with Air
+# for hot-reloading templates, static assets, and Go backend.
+#   docker compose up --build      # start (rebuilds the dev image)
 #   docker compose down            # stop and remove containers
 # ==============================================================================
 services:
@@ -10,24 +11,27 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: p2p-share:latest
+      target: dev
+    image: p2p-share:dev
     container_name: p2p-share
     ports:
       # host:container — app listens on 8080 inside the container
       - "8080:8080"
     restart: unless-stopped
-    # Persist uploaded files across container restarts. The app writes to
-    # ./uploads (WORKDIR /root/uploads inside the image).
+    # Mount the local directory to enable hot-reloading.
+    # /app/tmp is mounted as an anonymous volume so the container's build artifacts
+    # don't conflict with or pollute the host system's filesystem.
     volumes:
-      - uploads-data:/root/uploads
-    # Mirror the Kubernetes liveness probe: GET / on :8080. alpine's busybox
-    # ships wget, so no extra packages are needed.
+      - .:/app
+      - /app/tmp
+      - uploads-data:/app/uploads
+    # Mirror the Kubernetes liveness probe: GET / on :8080.
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/"]
       interval: 15s
       timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 15s
     # Match the resource envelope declared in k8s/deployment.yaml.
     deploy:
       resources:

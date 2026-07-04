@@ -1,0 +1,56 @@
+# Config file for Air (https://github.com/air-verse/air) in TOML format
+
+root = "."
+tmp_dir = "tmp"
+
+[build]
+# Just plain old shell command. You could use `make` as well.
+cmd = "go build -buildvcs=false -o ./tmp/main ./cmd/server"
+# Binary file yields from `cmd`.
+bin = "./tmp/main"
+# Customize binary.
+full_bin = "./tmp/main"
+# Watch these filename extensions.
+include_ext = ["go", "tpl", "tmpl", "html", "css", "js"]
+# Ignore these filename extensions or directories.
+exclude_dir = ["assets", "tmp", "vendor", "uploads"]
+# Watch these directories if you specified.
+include_dir = []
+# Exclude files.
+exclude_file = []
+# Exclude specific regular expressions.
+exclude_regex = ["_test\\.go"]
+# Exclude unchanged files.
+exclude_unchanged = true
+# Follow symlink for directories
+follow_symlink = true
+# This log file places in your tmp_dir.
+log = "air.log"
+# Poll files for changes (needed for reliable Docker bind-mount updates on WSL2/macOS)
+poll = true
+poll_interval = 500 # ms
+# Delay after each trigger.
+delay = 1000 # ms
+# Stop running old binary when build errors occur.
+stop_on_error = true
+# Send Interrupt signal before killing process (useful for graceful shutdown)
+send_interrupt = true
+# Kill process lasting time.
+kill_delay = 500 # ms
+
+[log]
+# Show log time
+time = true
+# Only show main log
+main_only = false
+
+[color]
+# Customize each part's color.
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+# Clean garbage on exit
+clean_on_start = true
